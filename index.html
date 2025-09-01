@@ -36,10 +36,12 @@
                 .then(response => {
                     document.getElementById('status').textContent = 'メール送信成功！';
                     console.log('送信成功:', response.status, response.text);
+                    docment.write("この記事は最新です");
                 })
                 .catch(error => {
                     document.getElementById('status').textContent = 'メール送信に失敗しました';
                     console.error('送信エラー:', error);
+                    docment.write("この記事が作成されたのは3年前です");
                 });
         }
     </script>
