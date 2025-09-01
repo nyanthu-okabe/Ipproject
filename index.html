@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>グローバルIPをEmailJSで送信</title>
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            emailjs.init("GjJ2lPz32fEipEep4"); // 公開キーをここに
+        })();
+    </script>
+</head>
+<body>
+    <h1>グローバルIPをメールで送信</h1>
+    <p>あなたのIP: <span id="ip-address">取得中...</span></p>
+    <button onclick="sendIpViaEmail()">IPをメールで送信</button>
+    <p id="status"></p>
+
+    <script>
+        // グローバルIPを取得
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('ip-address').textContent = data.ip;
+            })
+            .catch(error => {
+                document.getElementById('ip-address').textContent = '取得失敗';
+                document.getElementById('status').textContent = 'IP取得に失敗しました';
+                console.error('IP取得エラー:', error);
+            });
+
+        // EmailJSでIPを送信
+        function sendIpViaEmail() {
+            const ip = document.getElementById('ip-address').textContent;
+            if (ip === '取得中...' || ip === '取得失敗') {
+                document.getElementById('status').textContent = 'IPが取得できていません';
+                return;
+            }
+
+            const templateParams = {
+                ip: ip,
+                timestamp: new Date().toISOString()
+            };
+
+            emailjs.send("service_r38oq44", "template_soooype", templateParams)
+                .then(response => {
+                    document.getElementById('status').textContent = 'メール送信成功！';
+                    console.log('送信成功:', response.status, response.text);
+                })
+                .catch(error => {
+                    document.getElementById('status').textContent = 'メール送信に失敗しました';
+                    console.error('送信エラー:', error);
+                });
+        }
+    </script>
+</body>
+</html>
